@@ -224,6 +224,13 @@ def format_back(word_data: dict, source_name: str) -> str:
 def create_csv_file(words_data: list[dict], source_name: str, output_path: str) -> str:
     """Crée le fichier CSV pour Brainscape."""
     try:
+        # Supprimer tous les anciens fichiers brainscape_*.csv
+        for old_file in Path('.').glob('brainscape_*.csv'):
+            try:
+                os.remove(old_file)
+            except:
+                pass
+
         with open(output_path, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
 

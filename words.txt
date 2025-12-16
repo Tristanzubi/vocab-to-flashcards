@@ -1,12 +1,7 @@
-landline
-hang up 
-ringtone
-missed
-returned
-receiver
-ringing
-picked
-bit
-pick-up
-rang
-hung-up
+provide
+stole
+browser
+unable
+replied
+unless
+print out
