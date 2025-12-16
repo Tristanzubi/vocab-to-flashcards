@@ -126,15 +126,18 @@ Mot: {word}
 Réponds EXACTEMENT dans ce format (avec les tirets):
 PART_OF_SPEECH: [verb/noun/adjective/adverb/other]
 DEFINITION: [définition en anglais, UNE SEULE PHRASE très simple et très courte, niveau débutant, pas plus de 12 mots]
-FRENCH: [traduction française]
+FRENCH: [traduction française - l'infinitif du verbe si c'est un verbe]
 EXAMPLE_1: [une phrase d'exemple pertinente en anglais avec ce mot]
 EXAMPLE_2: [une deuxième phrase d'exemple pertinente en anglais avec ce mot]
 
-Important:
+RÈGLES STRICTES:
 - La définition doit être TRÈS courte, TRÈS simple, et en une seule phrase (maximum 12 mots)
-- Les exemples doivent être réalistes et montrer l'usage naturel du mot
-- Pour les verbes: utilise l'infinitif
-- Pour les noms: utilise le singulier
+- Si le mot est un VERBE CONJUGUÉ (comme 'replied', 'running', 'walked'):
+  * DEFINITION doit inclure la forme de base entre parenthèses, par exemple:
+    "replied (past tense of 'to reply'): gave an answer to someone"
+  * FRENCH: donne l'infinitif du verbe (répondre, courir, marcher)
+- Si c'est un NOM: utilise le singulier
+- Les exemples doivent être réalistes et montrer l'usage naturel
 - Pas de formatage spécial, juste le texte simple"""
 
             message = client.messages.create(
