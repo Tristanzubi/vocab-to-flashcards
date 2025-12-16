@@ -1,0 +1,34 @@
+╔════════════════════════════════════════════════════════════════╗
+║   CONVERTISSEUR DE MOTS EN FLASHCARDS BRAINSCAPE               ║
+╚════════════════════════════════════════════════════════════════╝
+
+DÉMARRAGE RAPIDE :
+
+1. Copier .env.example en .env et ajouter votre clé API :
+   cp .env.example .env
+   (Éditez .env avec votre clé ANTHROPIC_API_KEY)
+
+2. Installer les dépendances (une seule fois) :
+   pip install -r requirements.txt
+
+3. Créer un fichier avec vos mots (un par ligne) :
+   words.txt ou my_words.txt
+
+4. Lancer le script :
+   python script.py
+
+   Ou double-cliquez :
+   - Windows : launch.bat
+   - Mac/Linux : launch.sh
+
+5. Importer le CSV généré dans Brainscape !
+
+
+VÉRIFIER LA CONFIGURATION :
+
+   python test_setup.py
+
+
+C'EST TOUT !
+
+Questions ? Lancez test_setup.py pour diagnostiquer.
