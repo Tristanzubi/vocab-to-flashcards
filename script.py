@@ -29,6 +29,7 @@ load_env_file()
 
 CONFIG_FILE = "config.json"
 ENV_FILE = ".env"
+PROCESSED_WORDS_FILE = "processed_words.json"
 
 
 def load_config() -> dict:
@@ -47,6 +48,36 @@ def save_config(config: dict):
     try:
         with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
             json.dump(config, f, ensure_ascii=False, indent=2)
+    except:
+        pass
+
+
+def normalize_word(word: str) -> str:
+    """Normalise un mot pour la détection de doublons."""
+    return word.strip().lower()
+
+
+def load_processed_words() -> set[str]:
+    """Charge la liste des mots déjà traités."""
+    path = Path(PROCESSED_WORDS_FILE)
+    if path.exists():
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    data = data.get("processed", [])
+                if isinstance(data, list):
+                    return {normalize_word(item) for item in data if isinstance(item, str)}
+        except:
+            pass
+    return set()
+
+
+def save_processed_words(words: set[str]):
+    """Sauvegarde les mots traités pour les prochains lancements."""
+    try:
+        with open(PROCESSED_WORDS_FILE, 'w', encoding='utf-8') as f:
+            json.dump({"processed": sorted(words)}, f, ensure_ascii=False, indent=2)
     except:
         pass
 
@@ -264,6 +295,39 @@ def main():
         words = read_words_file(file_path)
         print(f"✅ {len(words)} mots trouvés")
 
+        processed_words = load_processed_words()
+
+        seen_in_file = set()
+        unique_words = []
+        for word in words:
+            normalized = normalize_word(word)
+            if normalized in seen_in_file:
+                continue
+            seen_in_file.add(normalized)
+            unique_words.append(word)
+
+        duplicates_in_file = len(words) - len(unique_words)
+        if duplicates_in_file:
+            print(f"ℹ️  {duplicates_in_file} doublon(s) retiré(s) du fichier d'entrée.")
+
+        words = []
+        skipped_existing = 0
+        for word in unique_words:
+            normalized = normalize_word(word)
+            if normalized in processed_words:
+                skipped_existing += 1
+                continue
+            words.append(word)
+
+        if skipped_existing:
+            print(f"ℹ️  {skipped_existing} mot(s) déjà converti(s) seront ignorés.")
+
+        if not words:
+            print("\n✅ Tous les mots de ce fichier ont déjà été convertis auparavant.")
+            sys.exit(0)
+
+        print(f"🚀 {len(words)} nouveau(x) mot(s) à traiter.\n")
+
         # Initialiser le client Anthropic
         try:
             # Vérifier si la clé API est disponible
@@ -303,6 +367,10 @@ def main():
         output_filename = f"brainscape_{source_name.lower().replace(' ', '_')}.csv"
         print(f"\n📝 Création du fichier CSV...")
         csv_path = create_csv_file(words_data, source_name, output_filename)
+
+        if words_data:
+            processed_words.update(normalize_word(entry['word']) for entry in words_data)
+            save_processed_words(processed_words)
 
         # Afficher le résumé
         print("\n" + "="*60)
